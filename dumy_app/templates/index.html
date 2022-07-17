@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Django-Message-Alpine</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+
+<body style="background-color: #5353;">
+    <div class="container" x-data="{
+        async addMessage(){
+            const url = '{% url 'random_message' %}';
+            const response = await fetch(url , {
+                method: 'POST',
+            });
+            console.log(await response.json());
+        },
+        alert_cls(input){
+            switch(input){
+                case 'info':
+                    return 'alert alert-info'
+                case 'success':
+                    return 'alert alert-success'
+                case 'error':
+                    return 'alert alert-danger'
+                case 'warning':
+                    return 'alert alert-warning'
+            }
+        },
+    }">
+        <div class="row mb-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5>Django-Message-Alpine</h5>
+                <button x-on:click="await addMessage" class="btn btn-danger mt-1">Make a new message</button>
+                <a href="{% url 'index' %}" class="btn btn-primary">Refresh</a>
+            </div>
+        </div>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="row">
+                    <div x-bind:class="alert_cls('{{message.tags}}')">
+                        {{message}}-{{message.tags}}
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
